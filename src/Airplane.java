@@ -52,6 +52,11 @@ public class Airplane {
         if (seat != null) seat.reserved = true;
     }
 
+    public void reserveSeat(Seat seat) {
+
+        seat.reserved = true;
+    }
+
     public void reserveSeats(Set<Reservation> reservations) {
 
         for (var reservation : reservations) {

@@ -36,6 +36,10 @@ public class AirlineData {
         }
     }
 
+    public static File getReservationDataFile() {
+        return reservationDataFile;
+    }
+
     public static Map<String,Airplane> getAirplaneData() {
 
         Map<String,Airplane> airplanes = new HashMap<>();
