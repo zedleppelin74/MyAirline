@@ -1,5 +1,8 @@
-BE737;Paris;Warsaw;Tue,Sat
-AA320;Munich;Barcelona;Wed,Fri
-BE757;Rome;Brussels;Mon,Thu,Sun
-AA380;London;Madrid;Tue,Fri
-AA319;Oslo;Berlin;Mon,Thu,Sat
+MA3729;BE737;Paris;Warsaw;Tue,Sat
+MA9347;AA320;Munich;Barcelona;Wed,Fri
+MA8491;BE757;Rome;Brussels;Mon,Thu,Sun
+MA1492;AA380;London;Madrid;Tue,Fri
+MA8472;AA319;Oslo;Berlin;Mon,Thu,Sat
+MA3039;AA321;Milan;Nice;Tue,Thu
+MA5489;BE777;Helsinki;Warsaw;Mon,Wed
+MA4929;AA330;Prague;Lisbon;Thu,Sat

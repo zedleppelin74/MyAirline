@@ -1,21 +1,64 @@
 import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
 
 public class MyAirline {
     public static void main(String[] args) {
-        Airplane airplane = new Airplane("BE747", "Boeing 747", 32, 6);
-        airplane.buySeat(3,"A");
-        airplane.buySeat(32,"B");
-        airplane.buySeat(32,"F");
-        airplane.printSeats();
 
         Map<String,Airplane> airplanes = AirlineData.getAirplaneData();
         Map<String,Flight> flights = AirlineData.getFlightData();
+        Map<String,Set<Reservation>> reservations = AirlineData.getReservationData();
 
         printFlightInfo(flights);
+
+        Scanner input = new Scanner(System.in);
+        Flight flight = null;
+
+        while(flight == null) {
+            System.out.println("Which flight would you like to book?");
+            String flightCode = input.nextLine();
+            flight = flights.get(flightCode);
+            if (flight == null) {
+                System.out.println("Incorrect flight code!");
+            }
+        }
+
+        Set<Reservation> flightReservations = reservations.get(flight.getFlightCode());
+        String airplaneCode = flight.getAirplaneCode();
+        Airplane airplane = airplanes.get(airplaneCode);
+        airplane.reserveSeats(flightReservations);
+        airplane.printSeats();
+
+        boolean flag = true;
+
+        while(flag) {
+            System.out.println("Which seat would you like to reserve?");
+            String seatInput = input.nextLine();
+            String[] seatInputArr = seatInput.split(",");
+            try {
+                Reservation reservation = new Reservation(Integer.parseInt(seatInputArr[0]), seatInputArr[1]);
+                Airplane.Seat seat = airplane.findSeat(reservation);
+                if (seat == null) {
+                    System.out.println("Incorrect input!");
+                    continue;
+                }
+                if (seat.isReserved()) {
+                    System.out.println("Seat already reserved!");
+                    continue;
+                }
+                airplane.reserveSeat(reservation);
+                flag = false;
+            } catch (NumberFormatException ex) {
+                System.out.println("Incorrect input!");
+            }
+
+        }
+
+        airplane.printSeats();
     }
 
     public static void printFlightInfo(Map<String, Flight> flights) {
-        System.out.println(Flight.getFormatString().formatted("AIRPLANE", "DEPARTURE", "DESTINATION", "FREQUENCY"));
+        System.out.println(Flight.getFormatString().formatted("FLIGHT", "AIRPLANE", "DEPARTURE", "DESTINATION", "FREQUENCY"));
         flights.forEach((k,v) -> System.out.println(v));
     }
 }

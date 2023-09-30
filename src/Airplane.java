@@ -1,12 +1,12 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class Airplane {
 
     class Seat {
         private String seat;
         private boolean reserved;
-        private boolean available;
 
         public Seat(int row, String seat) {
             String rowStr = String.valueOf(row);
@@ -15,7 +15,10 @@ public class Airplane {
             }
             this.seat = rowStr + seat;
             this.reserved = false;
-            this.available = true;
+        }
+
+        public boolean isReserved() {
+            return reserved;
         }
 
         @Override
@@ -43,17 +46,32 @@ public class Airplane {
         }
     }
 
-    public void reserveSeat(int row, String seatLetter) {
-        Seat seat = findSeat(new Seat(row, seatLetter));
-        seat.reserved = true;
+    public void reserveSeat(Reservation reservation) {
+
+        Seat seat = findSeat(new Seat(reservation.getRow(), reservation.getSeat()));
+        if (seat != null) seat.reserved = true;
     }
 
-    public void buySeat(int row, String seatLetter) {
-        Seat seat = findSeat(new Seat(row, seatLetter));
-        seat.available = false;
+    public void reserveSeats(Set<Reservation> reservations) {
+
+        for (var reservation : reservations) {
+            Seat seat = findSeat(new Seat(reservation.getRow(), reservation.getSeat()));
+            if (seat != null) seat.reserved = true;
+        }
     }
 
     public Seat findSeat(Seat seat) {
+
+        for (var s : seats) {
+            if (s.seat.equals(seat.seat)) return s;
+        }
+        return null;
+    }
+
+    public Seat findSeat(Reservation reservation) {
+
+        Seat seat = new Seat(reservation.getRow(), reservation.getSeat());
+        System.out.println("Seat: " + seat);
         for (var s : seats) {
             if (s.seat.equals(seat.seat)) return s;
         }
@@ -61,6 +79,7 @@ public class Airplane {
     }
 
     public void printSeats() {
+
         int counter1 = 0;
         int counter2 = 0;
         for (int i = 0; i < rows; i++) {
@@ -70,7 +89,7 @@ public class Airplane {
             }
             System.out.println();
             for (int j = 0; j < seatsInRow; j++) {
-                System.out.print(seats.get(counter2).available ? " O  " : " X  ");
+                System.out.print(!seats.get(counter2).reserved ? " O  " : " X  ");
                 counter2++;
             }
             System.out.println();
