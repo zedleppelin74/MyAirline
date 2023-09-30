@@ -85,18 +85,14 @@ public class Airplane {
 
     public void printSeats() {
 
-        int counter1 = 0;
-        int counter2 = 0;
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < seatsInRow; j++) {
-                System.out.print(seats.get(counter1) + " ");
-                counter1++;
+        int counter = 0;
+        for (int i = 0; i < seatsInRow; i++) {
+            for (int j = 0; j < rows; j++) {
+                Seat seat = seats.get(counter + seatsInRow * j);
+                System.out.print(seat + " ");
+                System.out.print(!seat.reserved ? " O   " : " X   ");
             }
-            System.out.println();
-            for (int j = 0; j < seatsInRow; j++) {
-                System.out.print(!seats.get(counter2).reserved ? " O  " : " X  ");
-                counter2++;
-            }
+            counter++;
             System.out.println();
         }
     }
