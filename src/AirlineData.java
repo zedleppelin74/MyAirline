@@ -1,5 +1,8 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class AirlineData {
@@ -55,12 +58,25 @@ public class AirlineData {
 
     public static Map<String,Flight> getFlightData() {
 
-        Map<String,Flight> flights = new HashMap<>();
+        Map<String,Flight> flights = new TreeMap<>();
 
         while (flightData.hasNextLine()) {
+
             String data = flightData.nextLine();
             String[] dataArr = data.split(";");
-            flights.put(dataArr[0], new Flight(dataArr[0], dataArr[1], dataArr[2], dataArr[3], dataArr[4]));
+
+            List<DayOfWeek> frequency = new ArrayList<>();
+            for (var day : dataArr[5].split(",")) {
+                frequency.add(DayOfWeek.valueOf(day));
+            }
+
+            List<LocalDateTime> dates = getFlightDepartures(frequency, Integer.parseInt(dataArr[6]));
+            for (var date : dates) {
+                String flightCode = "MA" + dataArr[0] + date.getDayOfWeek().ordinal();
+                String[] duration = dataArr[4].split(":");
+                flights.put(flightCode, new Flight(flightCode, dataArr[1], dataArr[2], dataArr[3],
+                        date, date.plusHours(Integer.parseInt(duration[0])).plusMinutes(Integer.parseInt(duration[1]))));
+            }
         }
 
         return flights;
@@ -81,5 +97,30 @@ public class AirlineData {
         }
 
         return reservations;
+    }
+
+    public static List<LocalDateTime> getFlightDepartures(List<DayOfWeek> frequency, int hour) {
+
+        LocalDateTime today = LocalDateTime.now().withHour(hour).withMinute(0).withSecond(0);
+        int todayDayOfWeek = today.getDayOfWeek().ordinal();
+        List<LocalDateTime> departures = new ArrayList<>();
+
+        for (int i = 0; i < 7; i++) {
+            for (var day : frequency) {
+                if (day == DayOfWeek.values()[i]) {
+                    if (i < todayDayOfWeek) {
+                        departures.add(today.plusDays(7 - i).truncatedTo(ChronoUnit.MINUTES));
+                    } else {
+                        if (today.plusDays(i).isBefore(LocalDateTime.now())) {
+                            departures.add(today.plusDays(i + 7).truncatedTo(ChronoUnit.MINUTES));
+                        } else {
+                            departures.add(today.plusDays(i).truncatedTo(ChronoUnit.MINUTES));
+                        }
+                    }
+                }
+            }
+        }
+        Collections.sort(departures);
+        return departures;
     }
 }

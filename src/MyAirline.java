@@ -11,6 +11,10 @@ public class MyAirline {
         Map<String,Airplane> airplanes = AirlineData.getAirplaneData();
         Map<String,Flight> flights = AirlineData.getFlightData();
         Map<String,Set<Reservation>> reservations = AirlineData.getReservationData();
+
+//        Airplane testAirplane = new Airplane("TEST", "TEST", 6, 6);
+//        testAirplane.printSeats();
+
         boolean appFlag = true;
 
         while (appFlag) {
@@ -36,10 +40,14 @@ public class MyAirline {
                 }
             }
 
-            Set<Reservation> flightReservations = reservations.get(flight.getFlightCode());
             String airplaneCode = flight.getAirplaneCode();
             Airplane airplane = airplanes.get(airplaneCode);
-            airplane.reserveSeats(flightReservations);
+
+            Set<Reservation> flightReservations = reservations.get(flight.getFlightCode());
+            if (flightReservations != null) {
+                airplane.reserveSeats(flightReservations);
+            }
+
             airplane.printSeats();
 
             boolean flag = true;
@@ -75,7 +83,7 @@ public class MyAirline {
     }
 
     public static void printFlightInfo(Map<String, Flight> flights) {
-        System.out.println(Flight.getFormatString().formatted("FLIGHT", "AIRPLANE", "DEPARTURE", "DESTINATION", "FREQUENCY"));
+        System.out.println(Flight.getFormatString().formatted("FLIGHT", "AIRPLANE", "DEPARTURE", "DESTINATION", "DEPARTURE", "ARRIVAL"));
         flights.forEach((k,v) -> System.out.println(v));
     }
 
